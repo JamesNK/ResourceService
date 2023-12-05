@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package aspire.v1;
+
+// If optional doesn't work then we need to use wrappers for nullable
+
+import "google/protobuf/timestamp.proto";
+
+message WatchResourcesRequest {
+}
+
+message WatchResourcesSnapshot {
+	repeated Resource items = 1;
+}
+
+message WatchResourcesChange  {
+	Resource resource = 1;
+}
+
+message Resource {
+	string name = 1;
+}
+
+message WatchResourcesResponse {
+	oneof payload {
+		WatchResourcesSnapshot initial_snapshot = 1;
+		WatchResourcesChange change = 2;
+	}
+}
+
+service DashboardService {
+	rpc WatchResources(WatchResourcesRequest) returns (stream WatchResourcesResponse);
+}
